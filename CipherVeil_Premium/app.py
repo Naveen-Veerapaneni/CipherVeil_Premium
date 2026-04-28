@@ -9,11 +9,7 @@ from encrypt.hmac_sha3 import generate_hmac_sha3, verify_hmac_sha3
 from steg.lsb_embed import embed_data
 from steg.lsb_extract import extract_data
 
-# Get the correct template folder path for both local and Vercel environments
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-static_dir = os.path.join(os.path.dirname(__file__), 'static')
-
-app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
 # Shared keys (in production these would be securely managed)
@@ -186,6 +182,4 @@ def api_extract():
 
 
 if __name__ == "__main__":
-    # Don't use debug=True in production (Vercel)
-    is_production = os.environ.get('ENVIRONMENT') == 'production'
-    app.run(debug=not is_production, port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True, port=5000)
