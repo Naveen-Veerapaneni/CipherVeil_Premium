@@ -1,5 +1,7 @@
 # CipherVeil — Secure Steganography Platform
 
+[![CipherVeil Premium CI](https://github.com/Naveen-Veerapaneni/CipherVeil_Premium/actions/workflows/test.yml/badge.svg)](https://github.com/Naveen-Veerapaneni/CipherVeil_Premium/actions/workflows/test.yml)
+
 > Invisible. Encrypted. Unbreakable.
 
 A production-grade steganography web application that encrypts messages with **AES-256-GCM**, authenticates with **HMAC-SHA3-512**, and invisibly embeds them into images using **LSB Steganography**.
