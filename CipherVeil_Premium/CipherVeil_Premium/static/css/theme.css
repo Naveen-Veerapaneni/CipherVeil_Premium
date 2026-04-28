@@ -1,0 +1,232 @@
+/* ═══════════════════════════════════════════
+   CIPHERVEIL — THEME SYSTEM
+   Dark Mode (default) + Light Mode
+═══════════════════════════════════════════ */
+
+/* ── DARK THEME ── */
+:root, [data-theme="dark"] {
+  /* Backgrounds */
+  --bg: #04060f;
+  --mesh: radial-gradient(ellipse 80% 70% at 10% 20%, rgba(60,40,140,.35) 0%, transparent 60%),
+         radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,200,160,.15) 0%, transparent 55%),
+         radial-gradient(ellipse 50% 60% at 50% 50%, rgba(100,40,120,.1) 0%, transparent 50%);
+
+  /* Orbs */
+  --orb1: #4a1fa8;
+  --orb2: #00b894;
+  --orb3: #c71d6f;
+  --orb-op: 0.3;
+
+  /* Grid */
+  --grid-c: rgba(255,255,255,0.022);
+
+  /* Text */
+  --text: #eef0ff;
+  --text-muted: rgba(238,240,255,0.48);
+
+  /* Accents */
+  --accent-a: #00f5c4;
+  --accent-a-end: #00c49a;
+  --accent-b: #8b7bff;
+  --accent-c: #ff6b9d;
+
+  /* Glows */
+  --glow-a: rgba(0,245,196,0.18);
+  --glow-b: rgba(139,123,255,0.18);
+  --glow-c: rgba(255,107,157,0.18);
+
+  /* Nav */
+  --nav-bg: rgba(4,6,15,0.65);
+
+  /* Brand gradient */
+  --brand-grad: linear-gradient(90deg, #00f5c4, #8b7bff);
+
+  /* Badge */
+  --badge-bg: rgba(0,245,196,0.1);
+  --badge-border: rgba(0,245,196,0.25);
+
+  /* Tag */
+  --tag-bg: rgba(0,245,196,0.07);
+  --tag-border: rgba(0,245,196,0.25);
+
+  /* Chips */
+  --chip-bg: rgba(255,255,255,0.05);
+  --chip-border: rgba(255,255,255,0.1);
+
+  /* Cards */
+  --card-bg: rgba(255,255,255,0.035);
+  --card-border: rgba(255,255,255,0.09);
+  --card-shadow: rgba(0,0,0,0.5);
+  --card-shine: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.04));
+  --ico-bg: rgba(255,255,255,0.06);
+
+  /* Card glows */
+  --glow-a: rgba(0,245,196,0.18);
+  --glow-b: rgba(139,123,255,0.18);
+  --shine-a: linear-gradient(135deg, transparent 40%, rgba(0,245,196,0.05));
+  --shine-b: linear-gradient(135deg, transparent 40%, rgba(139,123,255,0.05));
+
+  /* Timeline icons */
+  --tl-ico-bg: rgba(255,255,255,0.05);
+  --tl-ico-border: rgba(255,255,255,0.1);
+
+  /* Toggle */
+  --toggle-bg: rgba(255,255,255,0.08);
+  --toggle-border: rgba(255,255,255,0.15);
+  --toggle-knob: linear-gradient(135deg, #a5b4fc, #818cf8);
+
+  /* Border */
+  --border: rgba(255,255,255,0.08);
+
+  /* Video section */
+  --vid-sec-bg: rgba(255,255,255,0.02);
+
+  /* Fields */
+  --field-bg: rgba(255,255,255,0.05);
+  --field-border: rgba(255,255,255,0.1);
+  --field-focus: rgba(0,245,196,0.2);
+
+  /* Spinner */
+  --spinner-border: rgba(255,255,255,0.08);
+
+  /* Overlay */
+  --overlay-bg: rgba(4,6,15,0.78);
+
+  /* Step progress */
+  --step-active-bg: rgba(0,245,196,0.12);
+  --step-active-border: var(--accent-a);
+  --step-done: var(--accent-a);
+
+  /* Output fields */
+  --out-bg: rgba(255,255,255,0.03);
+  --out-border: rgba(255,255,255,0.08);
+
+  /* Success / error */
+  --success-bg: rgba(0,245,196,0.07);
+  --success-border: rgba(0,245,196,0.2);
+  --success-text: var(--accent-a);
+  --error-bg: rgba(255,107,157,0.07);
+  --error-border: rgba(255,107,157,0.2);
+  --error-text: var(--accent-c);
+
+  /* Result box */
+  --result-bg: rgba(0,245,196,0.04);
+  --result-border: rgba(0,245,196,0.18);
+  --result-header: rgba(0,245,196,0.08);
+
+  /* Meta */
+  --meta-bg: rgba(255,255,255,0.03);
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg: #f2f4fb;
+  --mesh: radial-gradient(ellipse 80% 70% at 10% 15%, rgba(140,120,255,.12) 0%, transparent 55%),
+         radial-gradient(ellipse 60% 50% at 90% 85%, rgba(0,184,148,.1) 0%, transparent 50%),
+         radial-gradient(ellipse 50% 60% at 50% 50%, rgba(220,80,140,.07) 0%, transparent 50%);
+
+  /* Orbs */
+  --orb1: #c4b5fd;
+  --orb2: #6ee7d0;
+  --orb3: #f9a8d4;
+  --orb-op: 0.55;
+
+  /* Grid */
+  --grid-c: rgba(0,0,0,0.04);
+
+  /* Text */
+  --text: #0f1120;
+  --text-muted: rgba(15,17,32,0.52);
+
+  /* Accents */
+  --accent-a: #00a37e;
+  --accent-a-end: #007a60;
+  --accent-b: #5b4fd6;
+  --accent-c: #c21060;
+
+  /* Glows */
+  --glow-a: rgba(0,163,126,0.15);
+  --glow-b: rgba(91,79,214,0.15);
+  --glow-c: rgba(194,16,96,0.12);
+
+  /* Nav */
+  --nav-bg: rgba(242,244,251,0.82);
+
+  /* Brand gradient */
+  --brand-grad: linear-gradient(90deg, #00a37e, #5b4fd6);
+
+  /* Badge */
+  --badge-bg: rgba(0,163,126,0.1);
+  --badge-border: rgba(0,163,126,0.25);
+
+  /* Tag */
+  --tag-bg: rgba(0,163,126,0.08);
+  --tag-border: rgba(0,163,126,0.25);
+
+  /* Chips */
+  --chip-bg: rgba(255,255,255,0.8);
+  --chip-border: rgba(0,0,0,0.1);
+
+  /* Cards */
+  --card-bg: rgba(255,255,255,0.75);
+  --card-border: rgba(0,0,0,0.08);
+  --card-shadow: rgba(0,0,0,0.12);
+  --card-shine: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.6));
+  --ico-bg: rgba(0,0,0,0.05);
+
+  /* Card glows */
+  --shine-a: linear-gradient(135deg, transparent 40%, rgba(0,163,126,0.05));
+  --shine-b: linear-gradient(135deg, transparent 40%, rgba(91,79,214,0.05));
+
+  /* Timeline */
+  --tl-ico-bg: rgba(255,255,255,0.9);
+  --tl-ico-border: rgba(0,0,0,0.1);
+
+  /* Toggle */
+  --toggle-bg: rgba(91,79,214,0.12);
+  --toggle-border: rgba(91,79,214,0.25);
+  --toggle-knob: linear-gradient(135deg, #fbbf24, #f59e0b);
+
+  /* Border */
+  --border: rgba(0,0,0,0.09);
+
+  /* Video section */
+  --vid-sec-bg: rgba(0,0,0,0.025);
+
+  /* Fields */
+  --field-bg: rgba(255,255,255,0.9);
+  --field-border: rgba(0,0,0,0.12);
+  --field-focus: rgba(0,163,126,0.15);
+
+  /* Spinner */
+  --spinner-border: rgba(0,0,0,0.08);
+
+  /* Overlay */
+  --overlay-bg: rgba(242,244,251,0.82);
+
+  /* Step progress */
+  --step-active-bg: rgba(0,163,126,0.1);
+  --step-active-border: var(--accent-a);
+  --step-done: var(--accent-a);
+
+  /* Output fields */
+  --out-bg: rgba(255,255,255,0.85);
+  --out-border: rgba(0,0,0,0.1);
+
+  /* Success / error */
+  --success-bg: rgba(0,163,126,0.07);
+  --success-border: rgba(0,163,126,0.2);
+  --success-text: var(--accent-a);
+  --error-bg: rgba(194,16,96,0.06);
+  --error-border: rgba(194,16,96,0.2);
+  --error-text: var(--accent-c);
+
+  /* Result box */
+  --result-bg: rgba(0,163,126,0.04);
+  --result-border: rgba(0,163,126,0.18);
+  --result-header: rgba(0,163,126,0.08);
+
+  /* Meta */
+  --meta-bg: rgba(0,0,0,0.03);
+}
