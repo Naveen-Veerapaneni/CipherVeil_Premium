@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CipherVeil — Invisible. Encrypted. Unbreakable.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/static/css/theme.css"/>
+  <style>
+    /* ═══════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════ */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .5s ease,color .5s ease}
+    ::selection{background:var(--accent-a);color:#fff}
+
+    /* ═══════════════════════════════════════
+       ANIMATED BACKGROUND
+    ═══════════════════════════════════════ */
+    .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .mesh-gradient{
+      position:absolute;inset:0;
+      background:var(--mesh);
+      transition:background 1s ease;
+    }
+    .noise{position:absolute;inset:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+    .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:var(--orb-op);animation:float var(--dur,18s) ease-in-out infinite alternate}
+    .orb-1{width:700px;height:700px;background:var(--orb1);top:-200px;left:-150px;--dur:20s}
+    .orb-2{width:600px;height:600px;background:var(--orb2);bottom:-200px;right:-100px;--dur:16s;animation-delay:-8s}
+    .orb-3{width:400px;height:400px;background:var(--orb3);top:45%;left:50%;transform:translate(-50%,-50%);--dur:14s;animation-delay:-4s}
+    @keyframes float{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,25px) scale(1.06)}}
+    .grid-lines{position:absolute;inset:0;background-image:linear-gradient(var(--grid-c) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c) 1px,transparent 1px);background-size:64px 64px}
+
+    /* ═══════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════ */
+    .navbar{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:1rem 2.5rem;
+      background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+      transition:background .5s,border-color .5s;
+    }
+    .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    .brand-icon{
+      width:38px;height:38px;border-radius:11px;
+      background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
+      display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;color:#fff;
+      box-shadow:0 4px 16px var(--accent-glow);
+    }
+    .brand-name{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;background:var(--brand-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
+    .nav-center{display:flex;gap:2rem;align-items:center}
+    .nav-center a{color:var(--text-muted);text-decoration:none;font-size:.875rem;font-weight:500;letter-spacing:.01em;transition:color .2s;position:relative}
+    .nav-center a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--accent-a);transition:width .3s}
+    .nav-center a:hover{color:var(--text)}.nav-center a:hover::after{width:100%}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .pill-badge{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .75rem;border-radius:999px;background:var(--badge-bg);border:1px solid var(--badge-border);color:var(--accent-a)}
+
+    /* THEME TOGGLE */
+    .theme-btn{
+      position:relative;width:52px;height:28px;border-radius:999px;cursor:pointer;
+      background:var(--toggle-bg);border:1.5px solid var(--toggle-border);
+      transition:all .4s cubic-bezier(.4,0,.2,1);outline:none;
+      flex-shrink:0;
+    }
+    .theme-btn::after{
+      content:'';position:absolute;top:2px;left:3px;
+      width:20px;height:20px;border-radius:50%;
+      background:var(--toggle-knob);
+      transition:transform .4s cubic-bezier(.4,0,.2,1),background .4s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    [data-theme="light"] .theme-btn::after{transform:translateX(22px)}
+    .theme-btn .t-icons{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 6px;pointer-events:none;font-size:.62rem}
+    .t-sun{color:#f59e0b;opacity:var(--sun-op,0);transition:opacity .3s}
+    .t-moon{color:#a5b4fc;opacity:var(--moon-op,1);transition:opacity .3s}
+    [data-theme="light"] .t-sun{--sun-op:1}[data-theme="light"] .t-moon{--moon-op:0}
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    .hero{
+      position:relative;z-index:1;
+      min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:9rem 2rem 5rem;
+    }
+    .hero-tag{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+      color:var(--accent-a);padding:.38rem 1rem;border-radius:999px;
+      background:var(--tag-bg);border:1px solid var(--tag-border);
+      margin-bottom:2.5rem;
+      animation:slideUp .7s ease both;
+    }
+    .hero-tag i{font-size:.68rem}
+    .hero-headline{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:clamp(2.8rem,7vw,6rem);
+      font-weight:700;line-height:1.05;
+      letter-spacing:-.035em;
+      margin-bottom:1.8rem;
+      animation:slideUp .7s .08s ease both;
+    }
+    .hero-headline .hl-1{display:block;color:var(--text)}
+    .hero-headline .hl-2{
+      display:block;
+      background:linear-gradient(135deg,var(--accent-a) 0%,var(--accent-b) 45%,var(--accent-c) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero-sub{
+      max-width:580px;font-size:1.1rem;color:var(--text-muted);line-height:1.75;
+      margin-bottom:4rem;animation:slideUp .7s .16s ease both;
+    }
+
+    /* TECH CHIPS */
+    .tech-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:5rem;animation:slideUp .7s .24s ease both}
+    .tech-chip{
+      display:inline-flex;align-items:center;gap:.4rem;
+      font-size:.72rem;font-weight:500;padding:.3rem .85rem;border-radius:999px;
+      background:var(--chip-bg);border:1px solid var(--chip-border);color:var(--text-muted);
+      transition:all .3s;cursor:default;
+    }
+    .tech-chip i{color:var(--accent-b);font-size:.65rem}
+    .tech-chip:hover{border-color:var(--accent-b);color:var(--text);transform:translateY(-2px)}
+
+    /* ═══════════════════════════════════════
+       MAIN CARDS
+    ═══════════════════════════════════════ */
+    .hero-cards{
+      display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;
+      width:100%;max-width:860px;
+      animation:slideUp .7s .32s ease both;
+    }
+    .hero-card{
+      position:relative;overflow:hidden;
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:28px;backdrop-filter:blur(20px);
+      padding:2.5rem;cursor:pointer;text-decoration:none;color:inherit;
+      display:flex;flex-direction:column;gap:1.4rem;
+      transition:transform .4s cubic-bezier(.34,1.56,.64,1),border-color .3s,box-shadow .3s,background .5s;
+    }
+    .hero-card::before{
+      content:'';position:absolute;inset:0;border-radius:28px;
+      background:var(--card-shine);opacity:0;transition:opacity .4s;
+    }
+    .hero-card:hover{transform:translateY(-10px) scale(1.02)}
+    .hero-card:hover::before{opacity:1}
+    .card-s{--ca:var(--accent-a);--cg:var(--glow-a);--csh:var(--shine-a)}
+    .card-r{--ca:var(--accent-b);--cg:var(--glow-b);--csh:var(--shine-b)}
+    .hero-card:hover{border-color:var(--ca);box-shadow:0 0 60px var(--cg),0 32px 64px var(--card-shadow)}
+    .hero-card::before{background:var(--csh)}
+
+    .card-ico{
+      width:68px;height:68px;border-radius:20px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.7rem;
+      background:var(--ico-bg);border:1px solid var(--card-border);
+      transition:all .35s;
+    }
+    .hero-card:hover .card-ico{border-color:var(--ca);box-shadow:0 0 30px var(--cg)}
+    .card-s .card-ico i{color:var(--accent-a)}
+    .card-r .card-ico i{color:var(--accent-b)}
+    .card-name{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;letter-spacing:-.025em}
+    .card-s .card-name{color:var(--accent-a)}.card-r .card-name{color:var(--accent-b)}
+    .card-blurb{font-size:.9rem;color:var(--text-muted);line-height:1.65}
+    .card-steps{display:flex;flex-direction:column;gap:.45rem}
+    .card-step{display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:var(--text-muted)}
+    .card-step i{color:var(--ca);font-size:.6rem;flex-shrink:0}
+    .card-arrow{display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;color:var(--ca);margin-top:auto;transition:gap .25s}
+    .hero-card:hover .card-arrow{gap:.9rem}
+    .card-ring{position:absolute;border-radius:50%;border:1px solid var(--ca);transition:transform .5s,opacity .5s}
+    .ring-1{width:200px;height:200px;right:-50px;bottom:-50px;opacity:.06}
+    .ring-2{width:280px;height:280px;right:-90px;bottom:-90px;opacity:.03}
+    .hero-card:hover .ring-1{transform:scale(1.2);opacity:.12}
+
+    /* ═══════════════════════════════════════
+       HOW IT WORKS — STEPS
+    ═══════════════════════════════════════ */
+    .section{position:relative;z-index:1;padding:7rem 2rem;max-width:1140px;margin:0 auto}
+    .section-eyebrow{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-b);margin-bottom:.8rem}
+    .section-title{text-align:center;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.9rem);font-weight:700;letter-spacing:-.025em;margin-bottom:1rem}
+    .section-sub{text-align:center;font-size:1rem;color:var(--text-muted);max-width:540px;margin:0 auto 4rem;line-height:1.7}
+
+    /* Timeline steps */
+    .steps-timeline{display:flex;flex-direction:column;gap:0;max-width:700px;margin:0 auto}
+    .timeline-item{
+      display:flex;gap:2rem;align-items:flex-start;
+      padding:2rem 0;position:relative;
+      opacity:0;transform:translateX(-30px);transition:opacity .65s ease,transform .65s ease;
+    }
+    .timeline-item.vis{opacity:1;transform:translateX(0)}
+    .timeline-item:not(:last-child)::after{
+      content:'';position:absolute;left:27px;top:76px;bottom:-4px;width:2px;
+      background:linear-gradient(180deg,var(--accent-a),var(--accent-b));
+      opacity:.25;
+    }
+    .tl-icon-wrap{flex-shrink:0;position:relative}
+    .tl-icon{
+      width:56px;height:56px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;font-size:1.35rem;
+      background:var(--tl-ico-bg);border:1.5px solid var(--tl-ico-border);
+      position:relative;z-index:1;transition:all .35s;
+    }
+    .tl-num{
+      position:absolute;top:-6px;right:-6px;
+      width:20px;height:20px;border-radius:50%;
+      font-size:.6rem;font-weight:800;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--accent-a);color:#fff;
+    }
+    .timeline-item:hover .tl-icon{transform:scale(1.1);box-shadow:0 0 28px var(--glow-a)}
+    .tl-content{padding-top:.25rem}
+    .tl-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:.45rem;color:var(--text)}
+    .tl-desc{font-size:.875rem;color:var(--text-muted);line-height:1.7}
+    .tl-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:.6rem;padding:.22rem .65rem;border-radius:999px;background:var(--badge-bg);border:1px solid var(--badge-border);color:var(--accent-a)}
+
+    /* ═══════════════════════════════════════
+       SECTION DIVIDER
+    ═══════════════════════════════════════ */
+    .sec-divider{position:relative;z-index:1;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0}
+
+    /* ═══════════════════════════════════════
+       VIDEO / DEMO SECTION
+    ═══════════════════════════════════════ */
+    .video-section{position:relative;z-index:1;padding:7rem 2rem;background:var(--vid-sec-bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;transition:background .5s}
+    .video-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,var(--glow-b),transparent);opacity:.15;pointer-events:none}
+    .video-inner{max-width:1000px;margin:0 auto;text-align:center}
+    .vid-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-c);padding:.32rem .95rem;border-radius:999px;border:1px solid rgba(255,107,157,.3);background:rgba(255,107,157,.08);margin-bottom:1rem}
+    [data-theme="light"] .vid-tag{border-color:rgba(220,50,100,.3);background:rgba(220,50,100,.07)}
+
+    .video-wrapper{
+      position:relative;margin:3.5rem auto 0;max-width:800px;
+      border-radius:24px;overflow:hidden;
+      border:1px solid var(--border);
+      box-shadow:0 40px 100px var(--card-shadow),0 0 0 1px var(--border);
+      transition:box-shadow .4s,transform .4s;
+      cursor:pointer;
+    }
+    .video-wrapper:hover{transform:scale(1.012);box-shadow:0 60px 120px var(--card-shadow),0 0 60px var(--glow-b)}
+    .video-wrapper iframe{display:block;width:100%;aspect-ratio:16/9;border:none}
+    .video-caption{margin-top:1.5rem;font-size:.875rem;color:var(--text-muted)}
+    .video-caption span{color:var(--accent-a);font-weight:600}
+
+    /* ═══════════════════════════════════════
+       SECURITY ARCHITECTURE DIAGRAM
+    ═══════════════════════════════════════ */
+    .arch-section{position:relative;z-index:1;padding:7rem 2rem;max-width:1140px;margin:0 auto}
+    .arch-flow{
+      display:grid;grid-template-columns:repeat(5,1fr);
+      gap:0;
+      position:relative;margin-top:1rem;
+    }
+    .arch-step{
+      display:flex;flex-direction:column;align-items:center;
+      padding:2rem .75rem;position:relative;
+      opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s;
+    }
+    .arch-step.vis{opacity:1;transform:translateY(0)}
+    .arch-step:not(:last-child)::after{
+      content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);
+      width:1px;height:64px;background:var(--border);
+    }
+    .arch-node{
+      width:80px;height:80px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.85rem;position:relative;margin-bottom:1.1rem;cursor:default;
+    }
+    .arch-node-inner{
+      width:100%;height:100%;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--chip-bg);border:2px solid var(--an-color,var(--border));
+      box-shadow:0 0 20px var(--an-glow,transparent);
+      transition:all .4s cubic-bezier(.34,1.56,.64,1);
+      position:relative;z-index:1;
+    }
+    .arch-step:hover .arch-node-inner{transform:scale(1.15)}
+    .arch-node::before{
+      content:'';position:absolute;inset:-9px;border-radius:50%;
+      border:1.5px solid var(--an-color,transparent);opacity:0;
+      animation:pulse 2.8s ease-in-out infinite;
+      animation-delay:var(--pd,0s);
+    }
+    @keyframes pulse{0%{transform:scale(.85);opacity:0}45%{opacity:.3}100%{transform:scale(1.6);opacity:0}}
+    .an-1{--an-color:var(--accent-a);--an-glow:var(--glow-a);--pd:0s}
+    .an-2{--an-color:var(--accent-b);--an-glow:var(--glow-b);--pd:.5s}
+    .an-3{--an-color:var(--accent-c);--an-glow:var(--glow-c);--pd:1s}
+    .an-4{--an-color:var(--accent-a);--an-glow:var(--glow-a);--pd:1.5s}
+    .an-5{--an-color:var(--accent-b);--an-glow:var(--glow-b);--pd:2s}
+    .arch-badge{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .55rem;border-radius:999px;background:var(--chip-bg);border:1px solid var(--chip-border);color:var(--text-muted);margin-bottom:.65rem}
+    .arch-label{font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:600;text-align:center;margin-bottom:.35rem}
+    .arch-sub{font-size:.7rem;color:var(--text-muted);line-height:1.55;text-align:center}
+
+    /* DATA STREAM */
+    .stream-bar{position:relative;height:4px;background:var(--border);border-radius:999px;overflow:hidden;margin:2.5rem 0}
+    .stream-bar::after{content:'';position:absolute;inset-y:0;left:-40%;width:40%;background:linear-gradient(90deg,transparent,var(--accent-a),var(--accent-b),var(--accent-c),transparent);border-radius:999px;animation:stream 2.4s linear infinite}
+    @keyframes stream{from{left:-40%}to{left:110%}}
+
+    /* DECODE ROW */
+    .decode-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+    .dn-1{--an-color:var(--accent-b);--an-glow:var(--glow-b);--pd:.2s}
+    .dn-2{--an-color:var(--accent-c);--an-glow:var(--glow-c);--pd:.7s}
+    .dn-3{--an-color:var(--accent-b);--an-glow:var(--glow-b);--pd:1.2s}
+    .dn-4{--an-color:var(--accent-a);--an-glow:var(--glow-a);--pd:1.7s}
+    .decode-step{display:flex;flex-direction:column;align-items:center;padding:2rem .75rem;position:relative;opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
+    .decode-step.vis{opacity:1;transform:translateY(0)}
+    .decode-step:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:64px;background:var(--border)}
+    .flow-label-row{margin-top:.3rem}
+
+    /* ENCODE LABEL */
+    .flow-dir-label{
+      display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem;
+      font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);
+    }
+    .flow-dir-label i{color:var(--accent-a)}
+
+    /* CTA ROW */
+    .cta-row{display:flex;gap:1rem;justify-content:center;margin-top:3.5rem;flex-wrap:wrap}
+    .cta-primary{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;border-radius:14px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;background:linear-gradient(135deg,var(--accent-a),var(--accent-a-end));color:#000;box-shadow:0 4px 24px var(--glow-a);transition:all .3s}
+    .cta-secondary{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;border-radius:14px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;text-decoration:none;background:linear-gradient(135deg,var(--accent-b),#5a4fd4);color:#fff;box-shadow:0 4px 24px var(--glow-b);transition:all .3s}
+    .cta-primary:hover,.cta-secondary:hover{transform:translateY(-3px) scale(1.03);filter:brightness(1.08)}
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer{position:relative;z-index:1;padding:2.5rem;text-align:center;border-top:1px solid var(--border);font-size:.8rem;color:var(--text-muted);transition:border-color .5s}
+    footer strong{color:var(--accent-a)}
+
+    /* ═══════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════ */
+    @keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){.arch-flow{grid-template-columns:repeat(3,1fr)}.decode-flow{grid-template-columns:repeat(2,1fr)}.arch-step:nth-child(3)::after,.decode-step:nth-child(2)::after{display:none}}
+    @media(max-width:700px){.hero-cards{grid-template-columns:1fr}.nav-center{display:none}.arch-flow{grid-template-columns:repeat(2,1fr)}.arch-step::after,.decode-step::after{display:none}}
+  </style>
+</head>
+<body>
+
+<!-- Background Layer -->
+<div class="bg-layer">
+  <div class="mesh-gradient"></div>
+  <div class="noise"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-lines"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="brand-icon"><i class="fa-solid fa-eye-slash"></i></div>
+    <span class="brand-name">CipherVeil</span>
+  </a>
+  <div class="nav-center">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#demo">Demo</a>
+    <a href="#architecture">Architecture</a>
+    <a href="/sender">Sender</a>
+    <a href="/receiver">Receiver</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill-badge">v2.0</span>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <span class="t-icons">
+        <i class="fa-solid fa-sun t-sun"></i>
+        <i class="fa-solid fa-moon t-moon"></i>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-tag"><i class="fa-solid fa-shield-halved"></i> AES-256-GCM · HMAC-SHA3-512 · DWT SVD Embedding</div>
+  <h1 class="hero-headline">
+    <span class="hl-1">Hide in Plain Sight.</span>
+    <span class="hl-2">Encrypted. Invisible.</span>
+  </h1>
+  <p class="hero-sub">A military-grade steganography platform that encrypts secrets with AES-256-GCM, authenticates with HMAC-SHA3-512, and embeds them invisibly inside ordinary images — undetectable to the human eye.</p>
+
+  <div class="tech-row">
+    <span class="tech-chip"><i class="fa-solid fa-lock"></i> AES-256-GCM</span>
+    <span class="tech-chip"><i class="fa-solid fa-fingerprint"></i> HMAC-SHA3-512</span>
+    <span class="tech-chip"><i class="fa-solid fa-image"></i> DWT SVD Embedding</span>
+    <span class="tech-chip"><i class="fa-solid fa-shield-halved"></i> End-to-End Security</span>
+    
+  </div>
+
+  <div class="hero-cards">
+    <!-- Sender -->
+    <a href="/sender" class="hero-card card-s">
+      <div class="card-ico"><i class="fa-solid fa-paper-plane"></i></div>
+      <div class="card-name">Sender</div>
+      <p class="card-blurb">Encrypt your secret message with AES-256-GCM and embed it invisibly inside any cover image using DWT SVD embedding.</p>
+      <div class="card-steps">
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Upload a cover image</div>
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Type your secret message</div>
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Download the stego image</div>
+      </div>
+      <div class="card-arrow">Open Sender Module <i class="fa-solid fa-arrow-right"></i></div>
+      <div class="card-ring ring-1"></div>
+      <div class="card-ring ring-2"></div>
+    </a>
+
+    <!-- Receiver -->
+    <a href="/receiver" class="hero-card card-r">
+      <div class="card-ico"><i class="fa-solid fa-inbox"></i></div>
+      <div class="card-name">Receiver</div>
+      <p class="card-blurb">Extract the hidden payload from a stego image, verify HMAC integrity, and decrypt the original message.</p>
+      <div class="card-steps">
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Upload the stego image</div>
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Provide HMAC key &amp; tag</div>
+        <div class="card-step"><i class="fa-solid fa-circle-dot"></i> Reveal the plaintext</div>
+      </div>
+      <div class="card-arrow">Open Receiver Module <i class="fa-solid fa-arrow-right"></i></div>
+      <div class="card-ring ring-1"></div>
+      <div class="card-ring ring-2"></div>
+    </a>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- How It Works — Animated Steps -->
+<section class="section" id="how-it-works">
+  <div class="section-eyebrow">End-to-End Pipeline</div>
+  <h2 class="section-title">How CipherVeil Works</h2>
+  <p class="section-sub">Six precisely engineered steps — from raw plaintext to a visually identical stego image, and back.</p>
+
+  <div class="steps-timeline" id="stepsTimeline">
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">📝<span class="tl-num">1</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">Upload Cover Image &amp; Enter Message</div>
+        <div class="tl-desc">The sender selects any PNG or JPG image as the carrier and types a confidential plaintext message. The image's pixel data will serve as the steganographic container — invisible to anyone without the key.</div>
+        <div class="tl-badge"><i class="fa-solid fa-image"></i> Carrier Selection</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">🔐<span class="tl-num">2</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">AES-256-GCM Authenticated Encryption</div>
+        <div class="tl-desc">The plaintext is encrypted using AES-256 in Galois/Counter Mode. A 128-bit random nonce is generated per session, and the algorithm produces both ciphertext and a 128-bit authentication tag that detects any tampering.</div>
+        <div class="tl-badge"><i class="fa-solid fa-lock"></i> AES-256-GCM</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">🛡️<span class="tl-num">3</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">HMAC-SHA3-512 Integrity Authentication</div>
+        <div class="tl-desc">A 512-bit HMAC is computed over the combined payload (ciphertext + nonce + tag) using a secret key. This provides an additional, independent layer of integrity verification separate from AES-GCM's built-in authentication.</div>
+        <div class="tl-badge"><i class="fa-solid fa-fingerprint"></i> HMAC-SHA3-512</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">🖼️<span class="tl-num">4</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">DWT SVD Embedding</div>
+        <div class="tl-desc">The full payload (length header + ciphertext + nonce + tag + HMAC) is serialized and embedded using Discrete Wavelet Transform and Singular Value Decomposition techniques. This method provides enhanced security and robustness against various attacks.</div>
+        <div class="tl-badge"><i class="fa-solid fa-eye-slash"></i> DWT SVD Embedding</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">📤<span class="tl-num">5</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">Stego Image Output</div>
+        <div class="tl-desc">The resulting image is visually indistinguishable from the original. It can be shared publicly — via email, messaging apps, social media — without raising suspicion. The hidden payload is invisible without the secret key.</div>
+        <div class="tl-badge"><i class="fa-solid fa-shield-check"></i> Stego Output</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-icon-wrap">
+        <div class="tl-icon">🔓<span class="tl-num">6</span></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">Extraction, Verification &amp; Decryption</div>
+        <div class="tl-desc">The receiver uploads the stego image and provides the HMAC key. The system extracts the payload via LSB extraction, verifies HMAC-SHA3-512 integrity (any tampering fails here), then decrypts with AES-256-GCM to reveal the original plaintext.</div>
+        <div class="tl-badge"><i class="fa-solid fa-unlock"></i> Secure Decryption</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- VIDEO SECTION -->
+<section class="video-section" id="demo">
+  <div class="video-inner">
+    <div class="vid-tag"><i class="fa-solid fa-film"></i> Project Demo</div>
+    <h2 class="section-title" style="margin-bottom:.8rem">Watch It In Action</h2>
+    <p class="section-sub" style="margin-bottom:0">See CipherVeil encrypt, hide, and recover a secret message in real time — the complete steganographic pipeline demonstrated live.</p>
+
+    <div class="video-wrapper">
+      <!-- Steganography explainer video — replace src with your own video URL if needed -->
+      <iframe
+        src="https://www.youtube.com/embed/TWEXCYQKyDc?rel=0&modestbranding=1&color=white"
+        title="Steganography &amp; Encryption Explained"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    </div>
+    <p class="video-caption">Understanding <span>DWT SVD Embedding</span> combined with <span>AES-256-GCM</span> encryption — the two core technologies powering CipherVeil.</p>
+  </div>
+</section>
+
+<!-- Architecture Diagram -->
+<section class="arch-section" id="architecture">
+  <div class="section-eyebrow">Security Architecture</div>
+  <h2 class="section-title">Live Security Pipeline</h2>
+  <p class="section-sub">The animated flow of data from plaintext through every cryptographic stage to the final stego image — and back.</p>
+
+  <div class="flow-dir-label"><i class="fa-solid fa-arrow-right"></i> Encoding Path — Sender</div>
+  <div class="arch-flow" id="encodeFlow">
+    <div class="arch-step an-1">
+      <div class="arch-badge">INPUT</div>
+      <div class="arch-node an-1"><div class="arch-node-inner">📝</div></div>
+      <div class="arch-label">Plaintext</div>
+      <div class="arch-sub">Secret message from sender</div>
+    </div>
+    <div class="arch-step an-2">
+      <div class="arch-badge">ENCRYPT</div>
+      <div class="arch-node an-2"><div class="arch-node-inner">🔐</div></div>
+      <div class="arch-label">AES-256-GCM</div>
+      <div class="arch-sub">256-bit key, random nonce, auth tag</div>
+    </div>
+    <div class="arch-step an-3">
+      <div class="arch-badge">SIGN</div>
+      <div class="arch-node an-3"><div class="arch-node-inner">🛡️</div></div>
+      <div class="arch-label">HMAC-SHA3-512</div>
+      <div class="arch-sub">512-bit integrity authentication</div>
+    </div>
+    <div class="arch-step an-4">
+      <div class="arch-badge">EMBED</div>
+      <div class="arch-node an-4"><div class="arch-node-inner">🖼️</div></div>
+      <div class="arch-label">DWT SVD Embedding</div>
+      <div class="arch-sub">Bits hidden using DWT and SVD techniques</div>
+    </div>
+    <div class="arch-step an-5">
+      <div class="arch-badge">OUTPUT</div>
+      <div class="arch-node an-5"><div class="arch-node-inner">📤</div></div>
+      <div class="arch-label">Stego Image</div>
+      <div class="arch-sub">Visually identical, secret inside</div>
+    </div>
+  </div>
+
+  <div class="stream-bar"></div>
+
+  <div class="flow-dir-label" style="margin-top:1rem"><i class="fa-solid fa-arrow-left"></i> Decoding Path — Receiver</div>
+  <div class="decode-flow" id="decodeFlow">
+    <div class="decode-step dn-1">
+      <div class="arch-badge">RECEIVE</div>
+      <div class="arch-node dn-1"><div class="arch-node-inner">🕵️</div></div>
+      <div class="arch-label">Stego Image</div>
+      <div class="arch-sub">Upload received image</div>
+    </div>
+    <div class="decode-step dn-2">
+      <div class="arch-badge">EXTRACT</div>
+      <div class="arch-node dn-2"><div class="arch-node-inner">⛏️</div></div>
+      <div class="arch-label">DWT SVD Extract</div>
+      <div class="arch-sub">Reconstruct payload from pixels</div>
+    </div>
+    <div class="decode-step dn-3">
+      <div class="arch-badge">VERIFY</div>
+      <div class="arch-node dn-3"><div class="arch-node-inner">✅</div></div>
+      <div class="arch-label">HMAC Verify</div>
+      <div class="arch-sub">Detect any tampering</div>
+    </div>
+    <div class="decode-step dn-4">
+      <div class="arch-badge">DECRYPT</div>
+      <div class="arch-node dn-4"><div class="arch-node-inner">🔓</div></div>
+      <div class="arch-label">AES-256-GCM</div>
+      <div class="arch-sub">Recover original plaintext</div>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <a href="/sender" class="cta-primary"><i class="fa-solid fa-paper-plane"></i> Launch Sender</a>
+    <a href="/receiver" class="cta-secondary"><i class="fa-solid fa-inbox"></i> Launch Receiver</a>
+  </div>
+</section>
+
+<footer>
+  Built by Naveen Veerapaneni and Karthikeya Raparla — &copy; 2026. <strong>CipherVeil</strong> 
+<script src="/static/js/theme.js"></script>
+<script>
+  // Scroll reveal for timeline + arch steps
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const children = e.target.querySelectorAll('.timeline-item, .arch-step, .decode-step');
+        children.forEach((el, i) => setTimeout(() => el.classList.add('vis'), i * 140));
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  ['stepsTimeline','encodeFlow','decodeFlow'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) revealObs.observe(el);
+  });
+</script>
+</body>
+</html>
